@@ -20,16 +20,18 @@ setInterval(checkForUpdate, 5000); // Check for updates every 5 seconds
 
 // Fullscreen button functionality
 fullscreenButton.addEventListener("click", () => {
-    if (videoFrame.requestFullscreen) {
-        videoFrame.requestFullscreen();
-    } else if (videoFrame.mozRequestFullScreen) { // Firefox
-        videoFrame.mozRequestFullScreen();
-    } else if (videoFrame.webkitRequestFullscreen) { // Chrome, Safari, Opera
-        videoFrame.webkitRequestFullscreen();
-    } else if (videoFrame.msRequestFullscreen) { // IE/Edge
-        videoFrame.msRequestFullscreen();
+    const container = document.querySelector(".video-container");
+
+    if (container.requestFullscreen) {
+        container.requestFullscreen();
+    } else if (container.mozRequestFullScreen) { // Firefox
+        container.mozRequestFullScreen();
+    } else if (container.webkitRequestFullscreen) { // Chrome, Safari, Opera
+        container.webkitRequestFullscreen();
+    } else if (container.msRequestFullscreen) { // IE/Edge
+        container.msRequestFullscreen();
     }
-    
+
     // Show play button after 2 seconds
     setTimeout(() => {
         playButton.style.display = "block";
