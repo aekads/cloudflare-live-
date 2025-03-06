@@ -19,6 +19,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
         .video-container {
             width: 100vw;
@@ -33,17 +34,21 @@
             top: 0;
             left: 0;
         }
-        #playButton {
+        .buttons {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        button {
             padding: 15px 30px;
             font-size: 18px;
             background-color: white;
             border: none;
             cursor: pointer;
-            display: none;
         }
     </style>
 </head>
@@ -55,7 +60,10 @@
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
             allowfullscreen>
         </iframe>
-        <button id="playButton">Play Live Stream</button>
+        <div class="buttons">
+            <button id="fullscreenButton">Fullscreen</button>
+            <button id="playButton" style="display: none;">Play Live Stream</button>
+        </div>
     </div>
 </body>
 </html>
