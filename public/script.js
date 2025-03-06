@@ -17,24 +17,26 @@ function checkForUpdate() {
 
 setInterval(checkForUpdate, 5000); // Check for updates every 5 seconds
 
-function toggleFullScreen() {
-    const videoContainer = document.getElementById("videoContainer");
-    if (!document.fullscreenElement) {
-        videoContainer.requestFullscreen().then(() => {
-            setTimeout(() => {
-                playButton.style.display = "block"; // Show play button after 5 seconds
-            }, 5000);
-        }).catch(err => {
-            console.error("Error attempting full-screen mode:", err);
-        });
+// Automatically enter full-screen mode when the page loads
+window.onload = () => {
+    if (videoFrame.requestFullscreen) {
+        videoFrame.requestFullscreen();
+    } else if (videoFrame.mozRequestFullScreen) { // Firefox
+        videoFrame.mozRequestFullScreen();
+    } else if (videoFrame.webkitRequestFullscreen) { // Chrome, Safari, Opera
+        videoFrame.webkitRequestFullscreen();
+    } else if (videoFrame.msRequestFullscreen) { // IE/Edge
+        videoFrame.msRequestFullscreen();
     }
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-    toggleFullScreen(); // Auto full-screen when page loads
-});
+    // Show play button after 2 seconds
+    setTimeout(() => {
+        playButton.style.display = "block";
+    }, 2000);
+};
 
+// Play button functionality
 playButton.addEventListener("click", () => {
-    videoFrame.src += "&autoplay=1"; // Trigger autoplay when play button is clicked
+    videoFrame.src = videoFrame.src; // Reload the iframe to play live stream
     playButton.style.display = "none";
 });
