@@ -24,3 +24,8 @@ function toggleFullScreen() {
         });
     }
 }
+
+function autoPlayVideo() {
+    const videoFrame = document.getElementById("videoFrame");
+    videoFrame.src += "?autoplay=1";
+}
