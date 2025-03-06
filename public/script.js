@@ -1,4 +1,5 @@
 const videoFrame = document.getElementById("videoFrame");
+const playButton = document.getElementById("playButton");
 let lastUpdated = null;
 
 function checkForUpdate() {
@@ -19,13 +20,21 @@ setInterval(checkForUpdate, 5000); // Check for updates every 5 seconds
 function toggleFullScreen() {
     const videoContainer = document.getElementById("videoContainer");
     if (!document.fullscreenElement) {
-        videoContainer.requestFullscreen().catch(err => {
+        videoContainer.requestFullscreen().then(() => {
+            setTimeout(() => {
+                playButton.style.display = "block"; // Show play button after 5 seconds
+            }, 5000);
+        }).catch(err => {
             console.error("Error attempting full-screen mode:", err);
         });
     }
 }
 
-function autoPlayVideo() {
-    const videoFrame = document.getElementById("videoFrame");
-    videoFrame.src += "?autoplay=1";
-}
+document.addEventListener("DOMContentLoaded", () => {
+    toggleFullScreen(); // Auto full-screen when page loads
+});
+
+playButton.addEventListener("click", () => {
+    videoFrame.src += "&autoplay=1"; // Trigger autoplay when play button is clicked
+    playButton.style.display = "none";
+});
