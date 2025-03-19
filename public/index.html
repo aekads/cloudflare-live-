@@ -32,24 +32,22 @@
 
     <script>
         const video = document.getElementById("video");
-        let lastUpdated = null;
+        const videoUrl = "https://customer-bqy92w40srfieu26.cloudflarestream.com/d6797b7423b3522a58f5d0f63d9a7c2f/manifest/video.m3u8";
 
-        function loadVideo(videoUrl) {
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(videoUrl);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play();
-                    enterFullscreen();
-                });
-            } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-                video.src = videoUrl;
-                video.addEventListener("loadedmetadata", () => {
-                    video.play();
-                    enterFullscreen();
-                });
-            }
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(videoUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                video.play();
+                enterFullscreen();
+            });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = videoUrl;
+            video.addEventListener("loadedmetadata", () => {
+                video.play();
+                enterFullscreen();
+            });
         }
 
         function enterFullscreen() {
@@ -63,31 +61,13 @@
                 video.msRequestFullscreen();
             }
 
+            // Pause, wait, then unmute and replay
             setTimeout(() => {
                 video.pause();
                 video.muted = false;
                 video.play();
-            }, 1000);
+            }, 1000); // 1-second delay to ensure audio loads properly
         }
-
-        function checkForUpdate() {
-            fetch("/video-status") // Endpoint should return { updated: timestamp, url: "new-video-url" }
-                .then(response => response.json())
-                .then(data => {
-                    if (lastUpdated !== data.updated) {
-                        console.log("New video detected, updating...");
-                        lastUpdated = data.updated;
-                        loadVideo(data.url); // Load new video URL
-                    }
-                })
-                .catch(err => console.error("Error checking for updates:", err));
-        }
-
-        // Load initial video
-        loadVideo("https://customer-bqy92w40srfieu26.cloudflarestream.com/d6797b7423b3522a58f5d0f63d9a7c2f/manifest/video.m3u8");
-
-        // Check for new video updates every 5 seconds
-        setInterval(checkForUpdate, 5000);
     </script>
 </body>
 </html>
