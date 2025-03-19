@@ -37,7 +37,7 @@ fullscreenButton.addEventListener("click", () => {
 
 // Play button functionality
 playButton.addEventListener("click", () => {
-    videoFrame.src = videoFrame.src.split("?")[0] + "?autoplay=1&muted=1&preload=auto&quality=720p";
+    videoFrame.src = videoFrame.src.split("?")[0] + "?autoplay=1&muted=0&preload=auto&quality=720p";
 });
 
 // Unmute button functionality
