@@ -61,12 +61,9 @@
                 video.msRequestFullscreen();
             }
 
-            // Pause, wait, then unmute and replay
             setTimeout(() => {
-                video.pause();
                 video.muted = false;
-                video.play();
-            }, 1000); // 1-second delay to ensure audio loads properly
+            }, 2000); // Unmute after 2 seconds
         }
     </script>
 </body>
