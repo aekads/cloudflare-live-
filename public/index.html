@@ -13,8 +13,7 @@
             box-sizing: border-box;
         }
 
-        html,
-        body {
+        html, body {
             width: 100%;
             height: 100%;
             overflow: hidden;
@@ -42,11 +41,11 @@
 
         .buttons {
             position: absolute;
-            top: 50%;
+            bottom: 20px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             gap: 10px;
         }
 
@@ -62,18 +61,14 @@
 
 <body>
     <div class="video-container">
-        <iframe
-        id="videoFrame"
-      src="https://customer-bqy92w40srfieu26.cloudflarestream.com/d6797b7423b3522a58f5d0f63d9a7c2f/iframe?autoplay=1&muted=0&preload=auto&quality=720p"
-
-        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-        allowfullscreen>
-    </iframe>
-    
+        <iframe id="videoFrame"
+            src="https://customer-bqy92w40srfieu26.cloudflarestream.com/d6797b7423b3522a58f5d0f63d9a7c2f/iframe?autoplay=1&preload=auto&quality=720p"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen>
+        </iframe>
 
         <div class="buttons">
-            <button id="fullscreenButton"  style="display: none;">Fullscreen</button>
-            <button id="playButton" style="display: none;">Play Live Stream</button>
+            <button id="fullscreenButton">Fullscreen</button>
+            <button id="playButton">Play Live Stream</button>
         </div>
     </div>
 </body>
