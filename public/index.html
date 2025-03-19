@@ -1,77 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloudflare Stream Video</title>
-    <script defer src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         html, body {
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            background-color: black;
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: black;
             flex-direction: column;
         }
-
         .video-container {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            max-width: 800px;
             position: relative;
         }
-
-        iframe {
-            width: 100vw;
-            height: 100vh;
-            border: none;
-            position: absolute;
-            top: 0;
-            left: 0;
+        video {
+            width: 100%;
+            max-height: 90vh;
         }
-
         .buttons {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            margin-top: 10px;
             display: flex;
-            flex-direction: row;
             gap: 10px;
         }
-
         button {
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 10px 20px;
+            font-size: 16px;
             background-color: white;
             border: none;
             cursor: pointer;
         }
     </style>
 </head>
-
 <body>
     <div class="video-container">
-        <iframe id="videoFrame"
-            src="https://customer-bqy92w40srfieu26.cloudflarestream.com/d6797b7423b3522a58f5d0f63d9a7c2f/iframe?autoplay=1&muted=1&preload=auto&quality=720p"
-            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen>
-        </iframe>
-
+        <video id="video" controls autoplay muted></video>
         <div class="buttons">
             <button id="unmuteButton">Unmute</button>
             <button id="fullscreenButton">Fullscreen</button>
-            <button id="playButton">Play Live Stream</button>
         </div>
     </div>
-</body>
 
+    <script>
+        const video = document.getElementById("video");
+        const unmuteButton = document.getElementById("unmuteButton");
+        const fullscreenButton = document.getElementById("fullscreenButton");
+
+        // Cloudflare Stream HLS URL
+        const videoUrl = "https://customer-bqy92w40srfieu26.cloudflarestream.com/d6797b7423b3522a58f5d0f63d9a7c2f/manifest/video.m3u8";
+
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource(videoUrl);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                video.play();
+            });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = videoUrl;
+            video.addEventListener("loadedmetadata", () => {
+                video.play();
+            });
+        }
+
+        // Unmute Button
+        unmuteButton.addEventListener("click", () => {
+            video.muted = false;
+        });
+
+        // Fullscreen Button
+        fullscreenButton.addEventListener("click", () => {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.mozRequestFullScreen) {
+                video.mozRequestFullScreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
+            }
+        });
+    </script>
+</body>
 </html>
