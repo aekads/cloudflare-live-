@@ -1,6 +1,7 @@
 const videoFrame = document.getElementById("videoFrame");
 const fullscreenButton = document.getElementById("fullscreenButton");
 const playButton = document.getElementById("playButton");
+const unmuteButton = document.getElementById("unmuteButton");
 let lastUpdated = null;
 
 // Function to check for updates
@@ -10,7 +11,7 @@ function checkForUpdate() {
         .then(data => {
             if (lastUpdated && lastUpdated !== data.updated) {
                 console.log("New video pushed, reloading frame...");
-                videoFrame.src = videoFrame.src.split("?")[0] + "?autoplay=1&preload=auto&quality=720p";
+                videoFrame.src = videoFrame.src.split("?")[0] + "?autoplay=1&muted=1&preload=auto&quality=720p";
             }
             lastUpdated = data.updated;
         })
@@ -36,5 +37,10 @@ fullscreenButton.addEventListener("click", () => {
 
 // Play button functionality
 playButton.addEventListener("click", () => {
-    videoFrame.src = videoFrame.src.split("?")[0] + "?autoplay=1&preload=auto&quality=720p";
+    videoFrame.src = videoFrame.src.split("?")[0] + "?autoplay=1&muted=1&preload=auto&quality=720p";
+});
+
+// Unmute button functionality
+unmuteButton.addEventListener("click", () => {
+    videoFrame.src = videoFrame.src.split("?")[0] + "?autoplay=1&muted=0&preload=auto&quality=720p";
 });
