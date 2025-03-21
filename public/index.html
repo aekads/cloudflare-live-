@@ -1,70 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloudflare Stream Video</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: black;
-        }
-        video {
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Stream Fullscreen</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { overflow: hidden; background: black; }
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      display: block;
+    }
+    #startButton, #unmuteButton {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 10;
+    }
+    #unmuteButton { display: none; }
+  </style>
 </head>
 <body>
-    <video id="video" autoplay muted playsinline></video>
+  <button id="startButton" style="display: none;">Start Live Stream</button>
+  <button id="unmuteButton">🔊 Unmute & Fullscreen</button>
+  <video id="videoPlayer" playsinline controls muted></video>
 
-    <script>
-        const video = document.getElementById("video");
-        const videoUrl = "https://customer-bqy92w40srfieu26.cloudflarestream.com/d6797b7423b3522a58f5d0f63d9a7c2f/manifest/video.m3u8";
+  <script>
+    const video = document.getElementById("videoPlayer");
+    const startButton = document.getElementById("startButton");
+    const unmuteButton = document.getElementById("unmuteButton");
+    const videoSrc = "https://customer-bqy92w40srfieu26.cloudflarestream.com/d6797b7423b3522a58f5d0f63d9a7c2f/manifest/video.m3u8";
 
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource(videoUrl);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                video.play();
-                enterFullscreen();
-            });
-        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-            video.src = videoUrl;
-            video.addEventListener("loadedmetadata", () => {
-                video.play();
-                enterFullscreen();
-            });
-        }
+    function playVideo() {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          video.play().then(() => {
+            console.log("Video is playing");
+          }).catch((error) => {
+            console.warn("Autoplay blocked. Keeping muted.", error);
+            unmuteButton.style.display = "block"; // Show unmute button
+          });
+        });
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = videoSrc;
+        video.play().catch((error) => {
+          console.warn("Autoplay blocked:", error);
+          unmuteButton.style.display = "block"; // Show unmute button
+        });
+      }
+    }
 
-        function enterFullscreen() {
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.mozRequestFullScreen) {
-                video.mozRequestFullScreen();
-            } else if (video.webkitRequestFullscreen) {
-                video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) {
-                video.msRequestFullscreen();
-            }
+    function enterFullscreen() {
+      if (video.requestFullscreen) video.requestFullscreen();
+      else if (video.mozRequestFullScreen) video.mozRequestFullScreen();
+      else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+      else if (video.msRequestFullscreen) video.msRequestFullscreen();
+    }
 
-            setTimeout(() => {
-                video.muted = false;
-            }, 2000); // Unmute after 2 seconds
-        }
-    </script>
+    function unmuteVideo() {
+      video.muted = false;
+      video.volume = 1.0; // Max volume
+      video.play().then(() => {
+        console.log("Video is now unmuted");
+        unmuteButton.style.display = "none"; // Hide button after clicking
+      }).catch(err => console.error("Unmute play failed:", err));
+    }
+
+    startButton.addEventListener('click', () => {
+      startButton.style.display = 'none';
+      enterFullscreen();
+      playVideo();
+    });
+
+    unmuteButton.addEventListener("click", unmuteVideo);
+
+    // Auto-start attempt after 5 seconds
+    setTimeout(() => {
+      console.log("Auto-play attempt");
+      playVideo();
+    }, 5000);
+     // Auto-start attempt after 5 seconds
+     setTimeout(() => {
+      console.log("Auto-play attempt");
+      unmuteVideo();
+    }, 10000);
+  </script>
+
 </body>
 </html>
